@@ -1,11 +1,15 @@
+#! /usr/bin/env python
+
 from argparse import ArgumentParser
 
 import re
 import time
 import getpass
+import csvParser
+import mailer
 
 def main():
-     parser = ArgumentParser("""The command line tool for grading""")
+     parser = ArgumentParser(description="The command line tool for grading")
      parser.add_argument('command')
      parser.add_argument('--send', action='store_true')
      parser.add_argument('--test', action='store_true')
@@ -39,11 +43,13 @@ def main():
                print("Done!")
           elif args.test:
                emails   = input("Please specify the path to emails.csv: ")
-               gradeDir = input("Please specify the directory of the Grade Files:")
+               gradeDir = input("Please specify the directory of the Grade Files: ")
+               labNum   = input("Please specify the lab number: ")
 
                print("linting grade submissions...")
-               time.sleep(4)
-               print("Done!")
+               print(emails)
+               emailDict = csvParser.parseEmails(labNum, emails)
+               mailer.checkGrades(gradeDir, emailDict)
           elif args.refresh:
                emails   = input("Please specify the path to emails.csv: ")
 
